@@ -1,39 +1,90 @@
 # RRF
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rrf`. To experiment with that code, run `bin/console` for an interactive prompt.
+RRF (Reciprocal Rank Fusion) is a Ruby gem that provides an implementation of the Reciprocal Rank Fusion (RRF) algorithm to merge and rank results from different search engines, specifically supporting ActiveRecord and Searchkick.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
+```ruby
+gem 'rrf'
+```
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+And then execute:
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+```sh
+bundle install
+```
 
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+Or install it yourself as:
+
+```sh
+gem install rrf
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+To use RRF, include the module in your ActiveRecord model and configure it as needed.
+
+### Example
+
+Let’s assume you have a model named Chunk that uses both ActiveRecord (with pgvector) and Searchkick:
+
+```ruby
+class Chunk < ApplicationRecord
+  include Searchkick
+  include RRF::Model
+
+  # ActiveRecord vector search using pgvector
+  # Assuming `embedding768` is a column of type `vector` (pgvector)
+
+  # Define any additional logic or methods as needed
+end
+```
+
+### Performing Searches and Fusing Results
+
+You can perform searches using ActiveRecord and Searchkick, and then fuse the results using the fuse method:
+
+```ruby
+# Configure the constant value if needed
+RRF.configure do |config|
+  config.rank_bias = 70 # User-defined value
+end
+
+# Perform Searchkick search
+es_result = Chunk.search("hi", load: false, limit: 50)
+
+# Perform ActiveRecord nearest neighbor search
+query_embedding = [0.1, 0.2, 0.3, ...] # Example embedding
+ar_result = Chunk.where("body ilike ?", "%hi%").limit(50)
+
+# Fuse the results and limit to 10
+result = Chunk.fuse(ar_result, es_result, limit: 10)
+
+# `result` now contains the top 10 fused search results
+```
+
+### Configuration
+
+You can configure the rank_bias value used in the RRF algorithm:
+
+```ruby
+RRF.configure do |config|
+  config.rank_bias = 70 # Default is 60
+end
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run bin/setup to install dependencies. Then, run rake spec to run the tests. You can also run bin/console for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run bundle exec rake install. To release a new version, update the version number in version.rb, and then run bundle exec rake release, which will create a git tag for the version, push git commits and tags, and push the .gem file to rubygems.org.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rrf. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/rrf/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/assaydepot/rrf.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the RRF project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/rrf/blob/main/CODE_OF_CONDUCT.md).
