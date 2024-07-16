@@ -4,7 +4,7 @@ require_relative "lib/rrf/version"
 
 Gem::Specification.new do |spec|
   spec.name = "rrf"
-  spec.version = Rrf::VERSION
+  spec.version = RRF::VERSION
   spec.authors = ["Chris Petersen"]
   spec.email = ["chris@scientist.com"]
 
