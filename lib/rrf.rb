@@ -48,7 +48,7 @@ module RRF
 
         # Sort by score and limit results
         top_record_ids = record_scores.sort_by { |_id, result| -result[:score] }.to_h.keys.first(limit)
-  
+
         # Load actual records from ActiveRecord
         self.where(id: top_record_ids).index_by(&:id).values_at(*top_record_ids).each do |record|
           record.define_singleton_method(:_rrf_score) { record_scores[record.id][:score] }

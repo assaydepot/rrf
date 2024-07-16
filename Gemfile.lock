@@ -8,9 +8,26 @@ GEM
   specs:
     ast (2.4.2)
     diff-lcs (1.5.1)
+    elastic-transport (8.3.5)
+      faraday (< 3)
+      multi_json
+    elasticsearch (8.14.0)
+      elastic-transport (~> 8.3)
+      elasticsearch-api (= 8.14.0)
+    elasticsearch-api (8.14.0)
+      multi_json
+    faraday (2.10.0)
+      faraday-net_http (>= 2.0, < 3.2)
+      logger
+    faraday-net_http (3.1.0)
+      net-http
     json (2.7.2)
     language_server-protocol (3.17.0.3)
     lint_roller (1.1.0)
+    logger (1.6.0)
+    multi_json (1.15.0)
+    net-http (0.4.1)
+      uri
     parallel (1.25.1)
     parser (3.3.4.0)
       ast (~> 2.4.1)
@@ -65,12 +82,15 @@ GEM
       rubocop-performance (~> 1.21.0)
     strscan (3.1.0)
     unicode-display_width (2.5.0)
+    uri (0.13.0)
 
 PLATFORMS
   arm64-darwin-23
   ruby
 
 DEPENDENCIES
+  elasticsearch
+  faraday
   rake (~> 13.0)
   rrf!
   rspec (~> 3.0)
