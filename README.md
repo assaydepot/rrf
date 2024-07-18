@@ -56,7 +56,7 @@ end
 es_result = Chunk.search("alpaca", load: false, limit: 50)
 
 # Perform ActiveRecord nearest neighbor search
-query_embedding = Candle::Model.new.embedding("alpaca")
+query_embedding = Candle::Model.new.embedding("alpaca") # You'd want to cache the model in memory
 ar_result = Chunk.all.nearest_neighbors(:embedding768, query_embedding, distance: :cosine).limit(50)
 
 # Fuse the results and limit to 10
