@@ -44,7 +44,7 @@ end
 
 ### Performing Searches and Fusing Results
 
-You can perform searches using ActiveRecord and Searchkick, and then fuse the results using the fuse method (the following relies on the [neighbor gem](https://github.com/ankane/neighbor)):
+You can perform searches using ActiveRecord and Searchkick, and then fuse the results using the fuse method (the following relies on the [neighbor gem](https://github.com/ankane/neighbor) and the [red-candle gem](https://github.com/assaydepot/red-candle)):
 
 ```ruby
 # Configure the constant value if needed
@@ -56,7 +56,7 @@ end
 es_result = Chunk.search("alpaca", load: false, limit: 50)
 
 # Perform ActiveRecord nearest neighbor search
-query_embedding = Chunk.embedding("alpaca")
+query_embedding = Candle::Model.new.embedding("alpaca")
 ar_result = Chunk.all.nearest_neighbors(:embedding768, query_embedding, distance: :cosine).limit(50)
 
 # Fuse the results and limit to 10
