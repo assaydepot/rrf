@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+SimpleCov.start do
+  add_filter '/spec/'
+  add_filter '/vendor/'
+  track_files 'lib/**/*.rb'
+end
+
 require "active_record"
 require "searchkick"
 require "faraday"
